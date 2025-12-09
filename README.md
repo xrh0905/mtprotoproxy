@@ -41,12 +41,18 @@ services:
     restart: unless-stopped
     network_mode: "host"
     environment: 
-      # Replace these values with your own configuration
+      # Core configuration - replace these values with your own
+      - PORT=443
       - TG_KEY=00000000000000000000000000000001
       - SECURE_ONLY=true
       - TLS_ONLY=true
       - TLS_DOMAIN=www.drive.google.com
       - AD_TAG=3c09c680b76ee91a4c25ad51f742267d
+      # Optional: Performance tuning
+      # - TO_CLT_BUFSIZE=65536
+      # - TO_TG_BUFSIZE=65536
+      # Optional: Metrics
+      # - METRICS_PORT=9090
     volumes:
         - ./config.py:/home/tgproxy/config.py
 ```
@@ -56,6 +62,80 @@ Then run: `docker-compose up -d`
 ## Channel Advertising ##
 
 To advertise a channel get a tag from **@MTProxybot** and put it to *config.py*.
+
+## Environment Variables ##
+
+All configuration options can be set via environment variables. This is particularly useful when running in Docker.
+
+### Required/Core Configuration ###
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `PORT` | `443` | Listening port for the proxy |
+| `TG_KEY` | `00000000000000000000000000000001` | User secret (32 hex characters) |
+| `AD_TAG` | `3c09c680b76ee91a4c25ad51f742267d` | Tag for advertising, obtainable from @MTProxybot |
+
+### Security Settings ###
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SECURE_ONLY` | `true` | Makes the proxy harder to detect (incompatible with very old clients) |
+| `TLS_ONLY` | `true` | Makes the proxy even harder to detect (compatible only with recent clients) |
+| `TLS_DOMAIN` | `www.google.com` | Domain for TLS, bad clients are proxied there |
+
+### SOCKS5 Proxy Settings (Optional) ###
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SOCKS5_HOST` | `None` | SOCKS5 proxy hostname or IP address |
+| `SOCKS5_PORT` | `None` | SOCKS5 proxy port |
+| `SOCKS5_USER` | `None` | SOCKS5 username (optional) |
+| `SOCKS5_PASS` | `None` | SOCKS5 password (optional) |
+
+**Note:** When SOCKS5 is enabled, middle proxy advertising is automatically disabled.
+
+### Performance Tuning (Optional) ###
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `TO_CLT_BUFSIZE` | `16384,100,131072` | Buffer size to client. Single integer or comma-separated tuple (low,users_margin,high) for adaptive sizing |
+| `TO_TG_BUFSIZE` | `65536` | Buffer size to Telegram servers. Single integer or comma-separated tuple for adaptive sizing |
+| `STATS_PRINT_PERIOD` | `600` | Statistics print period in seconds |
+| `CLIENT_KEEPALIVE` | `600` | Client keepalive period in seconds (10 minutes) |
+| `TG_CONNECT_TIMEOUT` | `10` | Telegram server connect timeout in seconds |
+| `FAST_MODE` | `true` | Enable fast mode (disables some checks for better performance) |
+
+### Network Settings (Optional) ###
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `LISTEN_ADDR_IPV4` | `0.0.0.0` | IPv4 listen address |
+| `LISTEN_ADDR_IPV6` | `::` | IPv6 listen address |
+| `PREFER_IPV6` | Auto-detected | Prefer IPv6 for outgoing connections |
+
+### Prometheus Metrics (Optional) ###
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `METRICS_PORT` | `None` | Prometheus exporter listen port (set to enable metrics) |
+| `METRICS_EXPORT_LINKS` | `false` | Export proxy links in metrics |
+
+### Example with Environment Variables ###
+
+```bash
+docker run -d --name mtprotoproxy \
+  --network host \
+  -e PORT=8443 \
+  -e TG_KEY=00000000000000000000000000000001 \
+  -e SECURE_ONLY=true \
+  -e TLS_ONLY=true \
+  -e TLS_DOMAIN=www.google.com \
+  -e AD_TAG=3c09c680b76ee91a4c25ad51f742267d \
+  -e TO_CLT_BUFSIZE=65536 \
+  -e TO_TG_BUFSIZE=65536 \
+  -e METRICS_PORT=9090 \
+  ghcr.io/xrh0905/mtprotoproxy:latest
+```
 
 ## Performance ##
 

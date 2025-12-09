@@ -5,6 +5,7 @@ services:
     restart: unless-stopped
     network_mode: "host"
     environment: 
+      - PORT=443
       - TG_KEY=00000000000000000000000000000001
       - SECURE_ONLY=true
       - TLS_ONLY=true
