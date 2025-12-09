@@ -48,7 +48,6 @@ services:
       - AD_TAG=3c09c680b76ee91a4c25ad51f742267d
     volumes:
         - ./config.py:/home/tgproxy/config.py
-        - ./mtprotoproxy.py:/home/tgproxy/mtprotoproxy.py
 ```
 
 Then run: `docker-compose up -d`
