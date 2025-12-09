@@ -32,3 +32,10 @@ TLS_DOMAIN = os.environ.get("TLS_DOMAIN", "www.google.com")
 
 # Tag for advertising, obtainable from @MTProxybot
 AD_TAG = os.environ.get("AD_TAG", "3c09c680b76ee91a4c25ad51f742267d")
+
+# SOCKS5 proxy for outgoing connections (optional)
+# Uncomment and configure if you need to route traffic through a SOCKS5 proxy
+SOCKS5_HOST = os.environ.get("SOCKS5_HOST", None)
+SOCKS5_PORT = int(os.environ.get("SOCKS5_PORT")) if os.environ.get("SOCKS5_PORT") else None
+SOCKS5_USER = os.environ.get("SOCKS5_USER", None)
+SOCKS5_PASS = os.environ.get("SOCKS5_PASS", None)

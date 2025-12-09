@@ -74,3 +74,64 @@ The proxy can be launched:
 - several times, clients will be automaticaly balanced between instances
 - with uvloop module to get an extra speed boost
 - with runtime statistics exported to [Prometheus](https://prometheus.io/)
+
+### Using SOCKS5 as Outgoing Proxy ###
+
+You can configure the MTProto proxy to use a SOCKS5 proxy for outgoing connections to Telegram servers. This is useful when your server cannot directly connect to Telegram or you want to route traffic through another proxy.
+
+**Note:** SOCKS5 mode is incompatible with middle proxy advertising and uvloop.
+
+#### Configuration in config.py ####
+
+Add the following settings to your `config.py`:
+
+```python
+# SOCKS5 proxy settings (optional)
+SOCKS5_HOST = "your.socks5.server.com"  # SOCKS5 proxy hostname or IP
+SOCKS5_PORT = 1080                       # SOCKS5 proxy port
+SOCKS5_USER = "username"                 # Optional: SOCKS5 username (set to None if not needed)
+SOCKS5_PASS = "password"                 # Optional: SOCKS5 password (set to None if not needed)
+```
+
+#### Using Environment Variables ####
+
+You can also configure SOCKS5 using environment variables:
+
+```bash
+docker run -d --name mtprotoproxy \
+  --network host \
+  -e SOCKS5_HOST=your.socks5.server.com \
+  -e SOCKS5_PORT=1080 \
+  -e SOCKS5_USER=username \
+  -e SOCKS5_PASS=password \
+  -v $(pwd)/config.py:/home/tgproxy/config.py \
+  ghcr.io/xrh0905/mtprotoproxy:latest
+```
+
+#### Docker Compose Example with SOCKS5 ####
+
+```yaml
+version: '3.8'
+services:
+  mtprotoproxy:
+    image: ghcr.io/xrh0905/mtprotoproxy:latest
+    restart: unless-stopped
+    network_mode: "host"
+    environment: 
+      - TG_KEY=00000000000000000000000000000001
+      - SECURE_ONLY=true
+      - TLS_ONLY=true
+      - TLS_DOMAIN=www.drive.google.com
+      # SOCKS5 proxy configuration
+      - SOCKS5_HOST=your.socks5.server.com
+      - SOCKS5_PORT=1080
+      - SOCKS5_USER=username
+      - SOCKS5_PASS=password
+    volumes:
+        - ./config.py:/home/tgproxy/config.py
+```
+
+**Important:** When SOCKS5 is enabled:
+- The middle proxy feature is automatically disabled
+- uvloop acceleration is not available
+- Channel advertising may not work
