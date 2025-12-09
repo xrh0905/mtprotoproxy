@@ -556,6 +556,10 @@ class TgConnectionPool:
             self.pools[(host, port, init_func)].append(connect_task)
 
     async def get_connection(self, host, port, init_func=None):
+        # Connection pool disabled to prevent Telegram showing "updating" status
+        # for users with fewer connections. This improves user experience by
+        # establishing fresh connections instead of reusing pooled ones.
+        # Original pooling logic commented out below:
         # self.register_host_port(host, port, init_func)
 
         # ret = None
