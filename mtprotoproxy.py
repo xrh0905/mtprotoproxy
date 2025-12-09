@@ -326,7 +326,7 @@ def apply_upstream_proxy_settings():
         import socks
 
         print_err(
-            "Socket-proxy mode activated, it is incompatible with advertising and uvloop"
+            "Socket-proxy mode activated, it is incompatible with advertising"
         )
         socks.set_default_proxy(
             socks.PROXY_TYPE_SOCKS5,
@@ -2472,9 +2472,6 @@ def setup_signals():
 
 
 def try_setup_uvloop():
-    if config.SOCKS5_HOST and config.SOCKS5_PORT:
-        # socks mode is not compatible with uvloop
-        return
     try:
         import uvloop
 
