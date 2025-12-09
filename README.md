@@ -79,7 +79,7 @@ The proxy can be launched:
 
 You can configure the MTProto proxy to use a SOCKS5 proxy for outgoing connections to Telegram servers. This is useful when your server cannot directly connect to Telegram or you want to route traffic through another proxy.
 
-**Note:** SOCKS5 mode is incompatible with middle proxy advertising and uvloop.
+**Note:** SOCKS5 mode is incompatible with middle proxy advertising.
 
 #### Configuration in config.py ####
 
@@ -133,5 +133,4 @@ services:
 
 **Important:** When SOCKS5 is enabled:
 - The middle proxy feature is automatically disabled
-- uvloop acceleration is not available
 - Channel advertising may not work
