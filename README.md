@@ -34,13 +34,14 @@ Fast and simple to setup MTProto proxy written in Python.
 You can use the pre-built image with docker-compose by updating your `docker-compose.yml`:
 
 ```yaml
-version: '2.0'
+version: '3.8'
 services:
   mtprotoproxy:
     image: ghcr.io/xrh0905/mtprotoproxy:latest
     restart: unless-stopped
     network_mode: "host"
     environment: 
+      # Replace these values with your own configuration
       - TG_KEY=00000000000000000000000000000001
       - SECURE_ONLY=true
       - TLS_ONLY=true
