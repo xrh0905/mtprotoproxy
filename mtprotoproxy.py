@@ -2472,6 +2472,11 @@ def setup_signals():
 
 
 def try_setup_uvloop():
+    # uvloop is incompatible with SOCKS5 proxy due to socket monkey-patching
+    if config.SOCKS5_HOST and config.SOCKS5_PORT:
+        print_err("SOCKS5 proxy is configured, skipping uvloop (incompatible)")
+        return
+    
     try:
         import uvloop
 
